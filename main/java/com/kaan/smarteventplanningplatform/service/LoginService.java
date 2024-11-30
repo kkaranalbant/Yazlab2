@@ -9,6 +9,7 @@ import com.kaan.smarteventplanningplatform.model.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+import java.io.IOException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,10 +41,13 @@ public class LoginService {
         String token = jwtService.getTokenByUserId(user.getId());
         Cookie cookie = new Cookie("Authorization", "Bearer+" + token);
         cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
         response.addCookie(cookie);
-        String cookieHeader = response.getHeader("Set-Cookie");
-        response.setHeader("Set-Cookie", cookieHeader + "; SameSite=None");
+        try {
+            response.sendRedirect("/v1/event/main");
+        } catch (IOException ex) {
+            response.addHeader("error", ex.getMessage());
+        }
+//        String cookieHeader = response.getHeader("Set-Cookie");
+//        response.setHeader("Set-Cookie", cookieHeader + "; SameSite=None");
     }
 }

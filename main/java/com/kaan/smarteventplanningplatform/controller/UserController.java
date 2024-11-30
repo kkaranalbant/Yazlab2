@@ -5,14 +5,16 @@
 package com.kaan.smarteventplanningplatform.controller;
 
 import com.kaan.smarteventplanningplatform.dto.request.PasswordUpdatingRequest;
-import com.kaan.smarteventplanningplatform.dto.request.PersonAddingRequest;
+import com.kaan.smarteventplanningplatform.dto.request.user.PersonAddingRequest;
 import com.kaan.smarteventplanningplatform.dto.request.user.PasswordResetControlRequest;
+import com.kaan.smarteventplanningplatform.dto.request.user.PasswordResetRequest;
 import com.kaan.smarteventplanningplatform.dto.request.user.UserUpdatingRequest;
 import com.kaan.smarteventplanningplatform.dto.response.UserResponse;
 import com.kaan.smarteventplanningplatform.service.JwtService;
 import com.kaan.smarteventplanningplatform.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,34 +47,35 @@ public class UserController {
 
     //digerileri icin
     @GetMapping("/get")
-    public ResponseEntity<UserResponse> getUserNormal(@RequestParam Long userId, @CookieValue("Authorization") String encodedJwt) {
+    public ResponseEntity<UserResponse> getUserNormal(@CookieValue("Authorization") String encodedJwt) {
         Long actorId = jwtService.getUserIdByNotParsedToken(encodedJwt);
-        return ResponseEntity.ok(userService.getUserByIdForOutside(actorId, userId));
+        return ResponseEntity.ok(userService.getUserByIdForOutside(actorId, actorId));
     }
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody PersonAddingRequest personAddingRequest) {
         userService.addUser(personAddingRequest);
         return ResponseEntity.ok("You have successfully registered");
     }
-    
+
     @GetMapping("/lock")
     public ResponseEntity<String> lockUserAccount(@RequestParam Long userId) {
         userService.lockUserAccount(userId);
         return ResponseEntity.ok("Account Locked");
     }
-    
+
     @GetMapping("/unlock")
     public ResponseEntity<String> unlockUserAccount(@RequestParam Long userId) {
         userService.unlockUserAccount(userId);
         return ResponseEntity.ok("Account Locked");
     }
-    
+
     @PostMapping("/update-pass")
     public ResponseEntity<String> updatePassword(@RequestBody PasswordUpdatingRequest passwordUpdatingRequest, @CookieValue("Authorization") String encodedJwt) {
         userService.updatePassword(jwtService.getUserIdByNotParsedToken(encodedJwt), passwordUpdatingRequest);
         return ResponseEntity.ok("You Updated Password");
     }
-    
+
     @PostMapping("/update")
     public ResponseEntity<String> updateAccountForNormalUsers(@RequestBody UserUpdatingRequest userUpdatingRequest, @CookieValue("Authorization") String encodedJwt) {
         userService.update(jwtService.getUserIdByNotParsedToken(encodedJwt), userUpdatingRequest);
@@ -84,31 +87,37 @@ public class UserController {
         userService.update(userId, userUpdatingRequest);
         return ResponseEntity.ok("Successful Updating Process");
     }
-    
-    @PostMapping("/delete")
-    public ResponseEntity<String> deleteAccount (@CookieValue("Authorization") String encodedJwt) {
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteAccount(@CookieValue("Authorization") String encodedJwt) {
         userService.deleteAccount(jwtService.getUserIdByNotParsedToken(encodedJwt));
         return ResponseEntity.ok("Successful");
     }
-    
+
     @PostMapping("/delete-exec")
-    public ResponseEntity<String> deleteAccountForAdmin (@RequestParam Long userId) {
+    public ResponseEntity<String> deleteAccountForAdmin(@RequestParam Long userId) {
         userService.deleteAccount(userId);
         return ResponseEntity.ok("Successful");
     }
-    
-    @GetMapping("/forgot-password")
-    public ModelAndView getPasswordResetControlPage () {
-        
-    }
-    
+
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> passwordResetControl (@RequestBody PasswordResetControlRequest passwordResetControlRequest) {
+    public ResponseEntity<String> passwordResetControl(@RequestBody PasswordResetControlRequest passwordResetControlRequest) {
         userService.sendPasswordResetLink(passwordResetControlRequest);
-        return ResponseEntity.ok("We sent a recovery url to your email") ;
+        return ResponseEntity.ok("We sent a recovery url to your email");
     }
-    
+
     @GetMapping("/reset-password")
-    public 
+    public ModelAndView getPasswordResetPanel(@RequestParam String verify) {
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("verify", verify);
+        mv.setViewName("recovery");
+        return mv;
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequest passwordResetRequest) {
+        userService.resetPassword(passwordResetRequest);
+        return ResponseEntity.ok("You Changed Your Password");
+    }
 
 }

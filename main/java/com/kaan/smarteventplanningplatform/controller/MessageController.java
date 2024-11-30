@@ -44,7 +44,7 @@ public class MessageController {
         return ResponseEntity.ok("Successful Sending Process");
     }
     
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity<String> delete(@RequestBody MessageIdRequest messageIdRequest, @CookieValue("Authorization") String encodedJwt) {
         messageService.delete(messageIdRequest, jwtService.getUserIdByNotParsedToken(encodedJwt));
         return ResponseEntity.ok("Successful Deleting Process");

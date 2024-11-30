@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Data;
@@ -27,9 +28,11 @@ public class Participant {
     private Long id ;
     
     @JoinColumn (name = "user_id")
+    @ManyToOne
     private User user ;
     
     @JoinColumn (name = "event_id")
+    @ManyToOne
     private Event event ;
     
     private LocalDateTime joiningTime ;

@@ -40,10 +40,10 @@ public class JwtService {
         logger = LoggerFactory.getLogger(JwtService.class);
     }
 
-    @Value("${jwt-secret}")
+    @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt-expiration-in-ms}")
+    @Value("${jwt.expiration}")
     private String expirationInMs;
 
     private TokenRepo tokenRepo;

@@ -5,7 +5,7 @@
 package com.kaan.smarteventplanningplatform.service;
 
 import com.kaan.smarteventplanningplatform.dto.request.PasswordUpdatingRequest;
-import com.kaan.smarteventplanningplatform.dto.request.PersonAddingRequest;
+import com.kaan.smarteventplanningplatform.dto.request.user.PersonAddingRequest;
 import com.kaan.smarteventplanningplatform.dto.request.user.PasswordResetControlRequest;
 import com.kaan.smarteventplanningplatform.dto.request.user.PasswordResetRequest;
 import com.kaan.smarteventplanningplatform.dto.request.user.UserUpdatingRequest;
@@ -43,7 +43,7 @@ public class UserService implements UserDetailsService {
     private final EmailService emailService;
     private final Random random;
 
-    public UserService(UserRepo userRepo, @Lazy BCryptPasswordEncoder passEncoder, PointService pointService, JwtService jwtService, ParticipantService participantService, MessageService messageService, EventService eventService, EmailService emailService, Random random) {
+    public UserService(UserRepo userRepo, @Lazy BCryptPasswordEncoder passEncoder, PointService pointService, @Lazy JwtService jwtService, ParticipantService participantService, MessageService messageService, EventService eventService, EmailService emailService) {
         this.userRepo = userRepo;
         this.passEncoder = passEncoder;
         this.pointService = pointService;
@@ -52,7 +52,7 @@ public class UserService implements UserDetailsService {
         this.messageService = messageService;
         this.eventService = eventService;
         this.emailService = emailService;
-        this.random = random;
+        this.random = new Random ();
     }
 
     @Override
@@ -236,8 +236,12 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public void resetPassword(PasswordResetRequest passwordResetRequest) {
-
+    public void resetPassword(PasswordResetRequest passwordResetRequest) throws UserException {
+        User user = userRepo.findByVerificationUrl(passwordResetRequest.verify()).orElseThrow(() -> new UserException("User Not Found"));
+        user.setVerificationUrl(null);
+        user.setIsAccountNonLocked(true);
+        user.setPassword(passEncoder.encode(passwordResetRequest.password()));
+        userRepo.save(user);
     }
 
 }

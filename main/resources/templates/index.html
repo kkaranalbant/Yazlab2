@@ -1,0 +1,342 @@
+<!--<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Smart Event Planning Platform</title>
+        <style>
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                background-color: #f0f0f0;
+            }
+
+            .background-animation {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                z-index: -1;
+            }
+
+            .image-container {
+                display: flex;
+                justify-content: center;
+                animation: slide 20s infinite alternate;
+            }
+
+            .event-image {
+                width: 200px;
+                height: 150px;
+                margin: 0 10px;
+                border-radius: 10px;
+                object-fit: cover;
+            }
+
+            @keyframes slide {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+
+            .App-header {
+                text-align: center;
+            }
+
+            .title {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+
+            .login-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .input-field {
+                width: 200px;
+                padding: 10px;
+                margin: 5px 0;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            .login-button,
+            .forgot-password {
+                padding: 10px 20px;
+                margin: 5px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            .login-button {
+                background-color: #007bff;
+                color: white;
+            }
+
+            .forgot-password {
+                background-color: transparent;
+                color: #007bff;
+                text-decoration: underline;
+            }
+
+            .response-message {
+                margin-top: 20px;
+                color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="background-animation">
+            <div class="image-container">
+                <img src="event1.jpg" alt="Event 1" class="event-image">
+                <img src="event2.jpeg" alt="Event 2" class="event-image">
+                <img src="event3.jpeg" alt="Event 3" class="event-image">
+            </div>
+        </div>
+        <header class="App-header">
+            <h1 class="title">Smart Event Planning Platform</h1>
+            <div class="login-container">
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Username"
+                    class="input-field"
+                    />
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    class="input-field"
+                    />
+                <button class="login-button" id="loginButton">Login</button>
+                <button class="forgot-password">Forgot Password?</button>
+            </div>
+             Sunucudan gelen mesaj 
+            <div id="responseMessage" class="response-message"></div>
+        </header>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const loginButton = document.getElementById('loginButton');
+                const responseMessage = document.getElementById('responseMessage');
+
+                loginButton.addEventListener('click', async () => {
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+
+                    try {
+                        const response = await fetch('/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({username, password}),
+                        });
+
+                        if (response.ok) {
+                            const message = await response.text();
+                            responseMessage.textContent = message; // Sunucudan gelen yanıt
+                            responseMessage.style.color = 'green';
+                        } else {
+                            responseMessage.textContent = 'Login Failed!';
+                            responseMessage.style.color = 'red';
+                        }
+                    } catch (error) {
+                        console.error('Error during login:', error);
+                        responseMessage.textContent = 'Error during login. Please try again.';
+                        responseMessage.style.color = 'red';
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Smart Event Planning Platform</title>
+        <style>
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                background-color: #f0f0f0;
+            }
+
+            .background-animation {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                z-index: -1;
+            }
+
+            .image-container {
+                display: flex;
+                justify-content: center;
+                animation: slide 20s infinite alternate;
+            }
+
+            .event-image {
+                width: 200px;
+                height: 150px;
+                margin: 0 10px;
+                border-radius: 10px;
+                object-fit: cover;
+            }
+
+            @keyframes slide {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+
+            .App-header {
+                text-align: center;
+            }
+
+            .title {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+
+            .login-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .input-field {
+                width: 200px;
+                padding: 10px;
+                margin: 5px 0;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            .login-button,
+            .forgot-password,
+            .register-button {
+                padding: 10px 20px;
+                margin: 5px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            .login-button {
+                background-color: #007bff;
+                color: white;
+            }
+
+            .forgot-password {
+                background-color: transparent;
+                color: #007bff;
+                text-decoration: underline;
+            }
+
+            .register-button {
+                background-color: #28a745;
+                color: white;
+            }
+
+            .response-message {
+                margin-top: 20px;
+                color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="background-animation">
+            <div class="image-container">
+                <img src="event1.jpg" alt="Event 1" class="event-image">
+                <img src="event2.jpeg" alt="Event 2" class="event-image">
+                <img src="event3.jpeg" alt="Event 3" class="event-image">
+            </div>
+        </div>
+        <header class="App-header">
+            <h1 class="title">Smart Event Planning Platform</h1>
+            <div class="login-container">
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Username"
+                    class="input-field"
+                />
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    class="input-field"
+                />
+                <button class="login-button" id="loginButton">Login</button>
+                <button class="forgot-password">Forgot Password?</button>
+                <!-- Yeni Register Butonu -->
+                <a href="register.html">
+                    <button class="register-button">Register</button>
+                </a>
+            </div>
+            <!-- Sunucudan gelen mesaj -->
+            <div id="responseMessage" class="response-message"></div>
+        </header>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const loginButton = document.getElementById('loginButton');
+                const responseMessage = document.getElementById('responseMessage');
+
+                loginButton.addEventListener('click', async () => {
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+
+                    try {
+                        const response = await fetch('/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ username, password }),
+                        });
+
+                        if (response.ok) {
+                            const message = await response.text();
+                            responseMessage.textContent = message; // Sunucudan gelen yanıt
+                            responseMessage.style.color = 'green';
+                        } else {
+                            responseMessage.textContent = 'Login Failed!';
+                            responseMessage.style.color = 'red';
+                        }
+                    } catch (error) {
+                        console.error('Error during login:', error);
+                        responseMessage.textContent = 'Error during login. Please try again.';
+                        responseMessage.style.color = 'red';
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
+

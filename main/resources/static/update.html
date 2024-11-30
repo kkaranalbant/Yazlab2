@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>User Update Form</title>
+        <script>
+            // Function to fetch user data on page load
+            async function loadUserData() {
+                try {
+                    const response = await fetch('/v1/user/get');
+                    const userData = await response.json();
+
+                    // Check if the response is successful
+                    if (response.ok) {
+                        // Populate the form with the user data
+                        document.getElementById('name').value = userData.name || '';
+                        document.getElementById('lastname').value = userData.lastname || '';
+                        document.getElementById('email').value = userData.email || '';
+                        document.getElementById('username').value = userData.username || '';
+                        document.getElementById('birthDate').value = userData.birthDate ? userData.birthDate : '';
+                        document.getElementById('location').value = userData.location || '';
+                        document.getElementById('phoneNumber').value = userData.phoneNumber || '';
+
+                        // Set gender field
+                        if (userData.gender) {
+                            document.getElementById('gender').value = userData.gender;
+                        }
+                    } else {
+                        alert('Error fetching user data');
+                    }
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+
+            // Function to handle form submission
+            async function updateUser(event) {
+                event.preventDefault(); // Prevent form from submitting normally
+
+                // Create a FormData object to handle form data, including the image file
+                const formData = new FormData(event.target);
+
+                // Send the form data as a POST request to the specified endpoint
+                const response = await fetch('/v1/user/update', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Successful Updating Process');
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            }
+
+            // Load user data when the page is loaded
+            window.onload = loadUserData;
+        </script>
+    </head>
+    <body>
+        <h1>Update User Information</h1>
+
+        <!-- Create the update form -->
+        <form id="updateForm" onsubmit="updateUser(event)">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="lastname">Lastname:</label>
+            <input type="text" id="lastname" name="lastname" required><br><br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+
+            <label for="birthDate">Birth Date:</label>
+            <input type="date" id="birthDate" name="birthDate" required><br><br>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+                <option value="OTHER">Other</option>
+            </select><br><br>
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required><br><br>
+
+            <label for="phoneNumber">Phone Number:</label>
+            <input type="text" id="phoneNumber" name="phoneNumber" required><br><br>
+
+            <label for="image">Profile Image:</label>
+            <input type="file" id="image" name="image" accept="image/*"><br><br>
+
+            <button type="submit">Update</button>
+        </form>
+    </body>
+</html>

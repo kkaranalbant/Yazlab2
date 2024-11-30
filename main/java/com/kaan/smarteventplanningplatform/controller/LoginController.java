@@ -39,6 +39,8 @@ public class LoginController {
     @PostMapping
     public ResponseEntity login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         loginService.login(loginRequest, response);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Successful");
     }
+    
+    
 }

@@ -9,6 +9,7 @@ import com.kaan.smarteventplanningplatform.model.Point;
 import com.kaan.smarteventplanningplatform.repo.PointRepo;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,7 +22,7 @@ public class PointService {
     private PointRepo pointRepo;
     private UserService userService;
 
-    public PointService(PointRepo pointRepo, UserService userService) {
+    public PointService(PointRepo pointRepo, @Lazy UserService userService) {
         this.pointRepo = pointRepo;
         this.userService = userService;
     }

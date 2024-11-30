@@ -4,10 +4,12 @@
  */
 package com.kaan.smarteventplanningplatform.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 /**
  *
  * @author kaan
  */
-public record LoginRequest (String username , String password) {
+public record LoginRequest (@NotBlank String username , @NotBlank String password) {
     
 }

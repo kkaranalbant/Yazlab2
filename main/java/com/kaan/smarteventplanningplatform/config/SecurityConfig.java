@@ -30,10 +30,12 @@ public class SecurityConfig {
 
     private UserService userService;
     private JwtAuthFilter jwtAuthFilter;
+    private JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
 
-    public SecurityConfig(UserService userService, JwtAuthFilter jwtAuthFilter) {
+    public SecurityConfig(UserService userService, JwtAuthFilter jwtAuthFilter, JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler) {
         this.userService = userService;
         this.jwtAuthFilter = jwtAuthFilter;
+        this.jwtAuthenticationSuccessHandler = jwtAuthenticationSuccessHandler;
     }
 
     @Bean
@@ -70,9 +72,13 @@ public class SecurityConfig {
                 .requestMatchers("/v1/participant/leave-exec", "/v1/participant/delete-all-user", "/v1/participant/get-all-exec").hasAuthority(Role.ROLE_ADMIN.name())
                 .requestMatchers("/v1/message/send", "/v1/message/delete", "/v1/message/get", "/v1/message/get-all", "/v1/message/get-all-user", "/v1/message/update").hasAnyAuthority(Role.ROLE_ADMIN.name(), Role.ROLE_USER.name())
                 .requestMatchers("/v1/message/get-all-exec", "/v1/message/delete-exec").hasAuthority(Role.ROLE_ADMIN.name())
-                .requestMatchers("/v1/event/create", "/v1/event/delete", "/v1/event/update", "/v1/event/get", "/v1/event/get-all").hasAnyAuthority(Role.ROLE_ADMIN.name(), Role.ROLE_USER.name())
+                .requestMatchers("/v1/event/create", "/v1/event/delete", "/v1/event/update", "/v1/event/get", "/v1/event/get-all" , "/v1/event/main").hasAnyAuthority(Role.ROLE_ADMIN.name(), Role.ROLE_USER.name())
                 .requestMatchers("/v1/event/delete-exec", "/v1/event/confirm", "/v1/event/decline", "/v1/event/update-exec").hasAuthority(Role.ROLE_ADMIN.name())
-                .anyRequest().permitAll());
+                .anyRequest().permitAll()).formLogin((form) -> form
+                .successForwardUrl("/v1/event/main")
+                .loginPage("/")
+        );
+
         return httpSecurity.build();
     }
 

@@ -21,8 +21,10 @@ public class ThyConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/").setViewName("index");
         registry.addViewController("/v1/user/get").setViewName("profile");
+        registry.addViewController("/v1/event/get").setViewName("event-page");
+        registry.addViewController("/v1/event/main").setViewName("main-user-panel");
     }
 
     @Bean
@@ -44,7 +46,7 @@ public class ThyConfig implements WebMvcConfigurer {
     @Bean
     public SpringResourceTemplateResolver thymeleafTemplateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setPrefix("file:/home/kaan/Desktop/socimedia-static/"); // Templates dizini
+        templateResolver.setPrefix("classpath:/templates/"); // Templates dizini
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode("HTML");
         templateResolver.setCharacterEncoding("UTF-8");

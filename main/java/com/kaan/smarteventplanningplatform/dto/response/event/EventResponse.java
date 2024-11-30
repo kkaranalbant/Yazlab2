@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * @author kaan
  */
 public record EventResponse(Long id , String name, LocalDateTime startingTime,
-         LocalDateTime finishingTime, String explanataion, String location,
+         LocalDateTime finishingTime, String explanation, String location,
          Category category) {
 
 }

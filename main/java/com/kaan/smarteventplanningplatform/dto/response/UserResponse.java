@@ -13,6 +13,6 @@ import java.time.LocalDate;
  */
 public record UserResponse(Long id, String name, String lastname, String email,
          String username, LocalDate birthDate, Gender gender,
-         String Location, String phoneNumber, byte[] image) {
+         String location, String phoneNumber, byte[] image) {
 
 }

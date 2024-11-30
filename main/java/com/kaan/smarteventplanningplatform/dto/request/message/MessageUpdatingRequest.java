@@ -8,6 +8,6 @@ package com.kaan.smarteventplanningplatform.dto.request.message;
  *
  * @author kaan
  */
-public record MessageUpdatingRequest (Long eventId , String newContext) {
+public record MessageUpdatingRequest (Long commentId , String newContext) {
     
 }

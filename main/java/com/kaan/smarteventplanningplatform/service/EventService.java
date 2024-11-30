@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,7 +32,7 @@ public class EventService {
 
     private PointService pointService;
 
-    public EventService(EventRepo eventRepo, UserService userService, PointService pointService) {
+    public EventService(EventRepo eventRepo, @Lazy UserService userService, PointService pointService) {
         this.eventRepo = eventRepo;
         this.userService = userService;
         this.pointService = pointService;
@@ -56,10 +57,17 @@ public class EventService {
             throw new EventException("You Can Not Pick This Name");
         }
         User user = userService.getUserById(userId);
-        Event event = new Event(eventCreatingRequest.name(), eventCreatingRequest.startingTime(),
-                eventCreatingRequest.finishingTime(), eventCreatingRequest.explanataion(),
-                eventCreatingRequest.location(), eventCreatingRequest.category(),
-                user, true, false);
+        Event event = new Event();
+        event.setCategory(eventCreatingRequest.category());
+        event.setExplanation(eventCreatingRequest.explanataion());
+        event.setEditted(false);
+        event.setPending(true);
+        event.setFinishTime(eventCreatingRequest.finishingTime());
+        event.setStartingTime(eventCreatingRequest.startingTime());
+        event.setName(eventCreatingRequest.name());
+        event.setLocation(eventCreatingRequest.location());
+        event.setUser(user);
+
         eventRepo.save(event);
         pointService.add(userId, 15L);
     }
@@ -207,6 +215,17 @@ public class EventService {
         EventResponse eventResponse = new EventResponse(event.getId(), event.getName(), event.getStartingTime(),
                 event.getFinishTime(), event.getExplanation(), event.getLocation(), event.getCategory());
         return eventResponse;
+    }
+
+    public List<EventResponse> getByUserId(Long userId) {
+        List<Event> events = eventRepo.findAllByUserId(userId);
+        List<EventResponse> responses = new ArrayList();
+        for (Event event : events) {
+            EventResponse eventResponse = new EventResponse(event.getId(), event.getName(), event.getStartingTime(),
+                    event.getFinishTime(), event.getExplanation(), event.getLocation(), event.getCategory());
+            responses.add(eventResponse);
+        }
+        return responses;
     }
 
     public List<EventResponse> getAll() {

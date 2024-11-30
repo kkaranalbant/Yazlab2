@@ -56,6 +56,7 @@ public class User implements UserDetails {
     private LocalDate birthDate;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(nullable = false)

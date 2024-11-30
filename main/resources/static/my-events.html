@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Etkinlik Listesi</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f9;
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 20px auto;
+                padding: 20px;
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                text-align: center;
+                color: #333;
+            }
+            .event-list {
+                list-style: none;
+                padding: 0;
+            }
+            .event-item {
+                padding: 15px;
+                margin: 10px 0;
+                background-color: #f9f9f9;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+            .event-item h2 {
+                margin: 0;
+                font-size: 20px;
+                color: #333;
+                cursor: pointer;
+            }
+            .event-item p {
+                margin: 5px 0;
+                color: #555;
+            }
+            .delete-button {
+                background-color: red;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                cursor: pointer;
+                font-size: 14px;
+                border-radius: 5px;
+                float: right;
+            }
+            .delete-button:hover {
+                background-color: darkred;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Etkinliklerim</h1>
+            <ul id="eventList" class="event-list">
+                <!-- Etkinlikler buraya gelecek -->
+            </ul>
+        </div>
+
+        <script>
+            // Sayfa açıldığında etkinlikleri al ve listele
+            window.onload = function () {
+                fetch('/v1/event/my-events')
+                        .then(response => response.json())
+                        .then(events => {
+                            const eventList = document.getElementById('eventList');
+                            events.forEach(event => {
+                                const li = document.createElement('li');
+                                li.classList.add('event-item');
+
+                                // Etkinlik başlığı
+                                const eventName = document.createElement('h2');
+                                eventName.textContent = event.name;
+                                eventName.onclick = function () {
+                                    window.location.href = `/v1/event/get?eventId=${event.id}`;
+                                };
+
+                                // Etkinlik açıklamaları
+                                const eventDetails = `
+                                <p><strong>Başlangıç Zamanı:</strong> ${new Date(event.startingTime).toLocaleString()}</p>
+                                <p><strong>Bitiş Zamanı:</strong> ${new Date(event.finishingTime).toLocaleString()}</p>
+                                <p><strong>Açıklama:</strong> ${event.explanation}</p>
+                                <p><strong>Konum:</strong> ${event.location}</p>
+                                <p><strong>Kategori:</strong> ${event.category}</p>
+                            `;
+
+                                // Delete Butonu
+                                const deleteButton = document.createElement('button');
+                                deleteButton.classList.add('delete-button');
+                                deleteButton.textContent = 'Delete';
+                                deleteButton.onclick = function () {
+                                    deleteEvent(event.id);
+                                };
+
+                                li.appendChild(eventName);
+                                li.innerHTML += eventDetails;
+                                li.appendChild(deleteButton);
+
+                                eventList.appendChild(li);
+                            });
+                        })
+                        .catch(error => console.error('Hata oluştu:', error));
+            };
+
+            // Etkinlik silme işlemi
+            function deleteEvent(eventId) {
+                fetch(`/v1/event/delete?eventId=${eventId}`, {
+                    method: 'DELETE',
+                })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('Etkinlik başarıyla silindi.');
+                                window.location.reload();  // Sayfayı yeniden yükleyerek listeyi güncelle
+                            } else {
+                                alert('Bir hata oluştu. Etkinlik silinemedi.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Hata oluştu:', error);
+                            alert('Bir hata oluştu. Etkinlik silinemedi.');
+                        });
+            }
+        </script>
+    </body>
+</html>

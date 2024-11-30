@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,7 +33,7 @@ public class ParticipantService {
 
     private PointService pointService;
 
-    public ParticipantService(ParticipantRepo participantRepo, EventService eventService, UserService userService, PointService pointService) {
+    public ParticipantService(ParticipantRepo participantRepo, EventService eventService, @Lazy UserService userService, PointService pointService) {
         this.participantRepo = participantRepo;
         this.eventService = eventService;
         this.userService = userService;
@@ -50,7 +51,7 @@ public class ParticipantService {
             throw new ParticipantException("You can no longer participate in this event");
         }
         if (event.isPending()) {
-            throw new ParticipantException ("Admin Didnt Confirm This Event Yet") ;
+            throw new ParticipantException("Admin Didnt Confirm This Event Yet");
         }
         Participant participant = new Participant();
         participant.setEvent(eventService.getByIdForServices(eventId));
@@ -85,8 +86,8 @@ public class ParticipantService {
         participantRepo.delete(participantOptional.get());
         pointService.add(participantExecutiveDeletingRequest.userId(), -10L);
     }
-    
-    public void deleteByUserId (Long userId) {
+
+    public void deleteByUserId(Long userId) {
         participantRepo.deleteByUserId(userId);
     }
 
@@ -94,7 +95,7 @@ public class ParticipantService {
         List<Participant> participants = participantRepo.findAllByUserId(userId);
         List<ParticipantResponse> responses = new ArrayList();
         for (Participant participant : participants) {
-            ParticipantResponse participantResponse = new ParticipantResponse(participant.getUser().getId(), participant.getEvent().getId(), participant.getJoiningTime());
+            ParticipantResponse participantResponse = new ParticipantResponse(participant.getId(), participant.getUser().getId(), participant.getEvent().getId(), participant.getJoiningTime());
             responses.add(participantResponse);
         }
         return responses;
@@ -104,10 +105,14 @@ public class ParticipantService {
         List<Participant> participants = participantRepo.findAllByEventId(participantEventIdRequest.eventId());
         List<ParticipantResponse> responses = new ArrayList();
         for (Participant participant : participants) {
-            ParticipantResponse participantResponse = new ParticipantResponse(participant.getUser().getId(), participant.getEvent().getId(), participant.getJoiningTime());
+            ParticipantResponse participantResponse = new ParticipantResponse(participant.getId(), participant.getUser().getId(), participant.getEvent().getId(), participant.getJoiningTime());
             responses.add(participantResponse);
         }
         return responses;
+    }
+
+    public boolean isParticipant(Long eventId, Long userId) {
+        return participantRepo.findByUserIdAndEventId(userId, eventId).isPresent();
     }
 
 }

@@ -10,6 +10,6 @@ import java.time.LocalDateTime;
  *
  * @author kaan
  */
-public record ParticipantResponse (Long userId , Long eventId , LocalDateTime joiningTime) {
+public record ParticipantResponse (Long id ,Long userId , Long eventId , LocalDateTime joiningTime) {
     
 }

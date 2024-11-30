@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,13 +31,13 @@ public class MessageService {
     private EventService eventService;
     private UserService userService;
 
-    public MessageService(MessageRepo messageRepo, EventService eventService, UserService userService) {
+    public MessageService(MessageRepo messageRepo, EventService eventService, @Lazy UserService userService) {
         this.messageRepo = messageRepo;
         this.eventService = eventService;
         this.userService = userService;
     }
 
-    public void add(MessageSendingRequest messageSendingRequest , Long userId) throws MessageException {
+    public void add(MessageSendingRequest messageSendingRequest, Long userId) throws MessageException {
         String explanation = messageSendingRequest.explanation();
         if (explanation == null || explanation.isEmpty()) {
             throw new MessageException("Message can not be Empty");
@@ -92,8 +93,8 @@ public class MessageService {
         }
         return messageResponses;
     }
-    
-    public void deleteByUserId (Long userId) {
+
+    public void deleteByUserId(Long userId) {
         messageRepo.deleteByUserId(userId);
     }
 
@@ -113,8 +114,11 @@ public class MessageService {
         if (messageUpdatingRequest.newContext().isEmpty() || messageUpdatingRequest == null) {
             throw new MessageException("Please Enter Valid Explanation");
         }
-        Message message = messageRepo.findByEventIdAndUserId(messageUpdatingRequest.eventId(), userId)
+        Message message = messageRepo.findById(messageUpdatingRequest.commentId())
                 .orElseThrow(() -> new MessageException("Updating Error"));
+        if (message.getUser().getId().longValue() != userId) {
+            throw new MessageException("You Can't Do Process On This Message");
+        }
         message.setContext(messageUpdatingRequest.newContext());
         message.setEditted(true);
         message.setSendingTime(LocalDateTime.now());

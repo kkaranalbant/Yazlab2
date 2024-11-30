@@ -10,6 +10,6 @@ import com.kaan.smarteventplanningplatform.validation.Password;
  *
  * @author kaan
  */
-public record PasswordResetRequest (@Password String password){
+public record PasswordResetRequest (String verify , @Password String password){
     
 }

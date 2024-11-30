@@ -6,10 +6,13 @@ package com.kaan.smarteventplanningplatform.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Data;
@@ -38,26 +41,28 @@ public class Event {
     
     private String location ;
     
+    @Enumerated(EnumType.STRING)
     private Category category ; 
     
     @JoinColumn(name = "user_id")
+    @ManyToOne
     private User user ;
     
     private boolean isPending ;
     
     private boolean isEditted ; 
 
-    public Event(String name, LocalDateTime startingTime, LocalDateTime finishTime, String explanation, String location, Category category, User user, boolean isPending, boolean isEditted) {
-        this.name = name;
-        this.startingTime = startingTime;
-        this.finishTime = finishTime;
-        this.explanation = explanation;
-        this.location = location;
-        this.category = category;
-        this.user = user;
-        this.isPending = isPending;
-        this.isEditted = isEditted;
-    }
+//    public Event(String name, LocalDateTime startingTime, LocalDateTime finishTime, String explanation, String location, Category category, User user, boolean isPending, boolean isEditted) {
+//        this.name = name;
+//        this.startingTime = startingTime;
+//        this.finishTime = finishTime;
+//        this.explanation = explanation;
+//        this.location = location;
+//        this.category = category;
+//        this.user = user;
+//        this.isPending = isPending;
+//        this.isEditted = isEditted;
+//    }
     
     
     

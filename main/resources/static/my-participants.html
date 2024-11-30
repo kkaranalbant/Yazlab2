@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Participant List</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+            .participant-list {
+                list-style-type: none;
+                padding: 0;
+            }
+            .participant-list li {
+                margin: 15px 0;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                background-color: #f9f9f9;
+            }
+            .event-link {
+                color: blue;
+                cursor: pointer;
+                text-decoration: underline;
+            }
+            .participant-info {
+                margin-bottom: 10px;
+            }
+            .leave-button {
+                background-color: red;
+                color: white;
+                padding: 8px 16px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+            .leave-button:hover {
+                background-color: darkred;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Participants</h1>
+        <ul class="participant-list" id="participantList"></ul>
+
+        <script>
+            // Sayfa yüklendiğinde /v1/participant/get-all endpoint'ine GET isteği yapılacak
+            document.addEventListener('DOMContentLoaded', function () {
+                fetch('/v1/participant/get-all')
+                        .then(response => response.json())
+                        .then(data => {
+                            const participantList = document.getElementById('participantList');
+                            data.forEach(participant => {
+                                const listItem = document.createElement('li');
+
+                                // Katılımcı bilgilerini ekle
+                                const participantInfo = document.createElement('div');
+                                participantInfo.classList.add('participant-info');
+                                participantInfo.innerHTML = `
+                                <strong>Participant ID:</strong> ${participant.id} <br>
+                                <strong>User ID:</strong> ${participant.userId} <br>
+                                <strong>Joining Time:</strong> ${new Date(participant.joiningTime).toLocaleString()}
+                            `;
+                                listItem.appendChild(participantInfo);
+
+                                // Event linkini oluştur
+                                const eventLink = document.createElement('span');
+                                eventLink.textContent = `Event ID: ${participant.eventId}`;
+                                eventLink.classList.add('event-link');
+                                eventLink.addEventListener('click', function () {
+                                    window.location.href = `/v1/event/get?eventId=${participant.eventId}`;
+                                });
+                                listItem.appendChild(eventLink);
+
+                                // Leave butonunu oluştur
+                                const leaveButton = document.createElement('button');
+                                leaveButton.textContent = 'Leave';
+                                leaveButton.classList.add('leave-button');
+                                leaveButton.addEventListener('click', function () {
+                                    // /v1/participant/leave endpoint'ine DELETE isteği yapılacak
+                                    fetch(`/v1/participant/leave?participantId=${participant.id}`, {
+                                        method: 'DELETE'
+                                    })
+                                            .then(response => response.json())
+                                            .then(result => {
+                                                alert(result.message || 'Successfully left the event');
+                                                // Katılımcı başarıyla ayrıldığında, listeyi güncellemek için yeniden yükle
+                                                location.reload();
+                                            })
+                                            .catch(error => {
+                                                console.error('Error leaving participant:', error);
+                                                alert('An error occurred while leaving the event');
+                                            });
+                                });
+                                listItem.appendChild(leaveButton);
+
+                                // Katılımcı bilgisini listeye ekle
+                                participantList.appendChild(listItem);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching participants:', error);
+                        });
+            });
+        </script>
+    </body>
+</html>
